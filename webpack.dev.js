@@ -2,7 +2,7 @@ const path = require('path')
 const webpack = require('webpack')
 
 module.exports = {
-  entry: './index.jsx',
+  entry: './client.jsx',
   mode: 'development',
   watch: true,
   resolve: {
