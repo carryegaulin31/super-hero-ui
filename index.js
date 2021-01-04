@@ -2,7 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const path = require('path')
 const { getAllHeroes, getHeroBySlug, saveNewHero } = require('./controllers/heroes')
-const { getAllTeams, getTeamBySlug, saveNewTeam } = require('./controllers/teams')
+const { getAllTeams, getTeamBySlug, saveNewTeam } = require('./controllers/Teams')
 
 const app = express()
 

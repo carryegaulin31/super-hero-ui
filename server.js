@@ -2,7 +2,7 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import path from 'path'
 import { getAllHeroes, getHeroBySlug, saveNewHero } from './controllers/heroes'
-import { getAllTeams, getTeamBySlug, saveNewTeam } from './controllers/teams'
+import { getAllTeams, getTeamBySlug, saveNewTeam } from './controllers/Teams'
 
 const app = express()
 
