@@ -2,7 +2,7 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import path from 'path'
 import { getAllHeroes, getHeroBySlug, saveNewHero } from './controllers/heroes'
-import { getAllTeams, getTeamBySlug, saveNewTeam } from './controllers/Teams'
+import { getAllTeams, getTeamBySlug, saveNewTeam } from './controllers/teams'
 
 const app = express()
 
@@ -18,6 +18,6 @@ app.post('/api/teams', bodyParser.json(), saveNewTeam)
 
 app.all('*', (request, response) => response.sendFile(path.resolve(__dirname, 'public', 'index.html')))
 
-app.listen(1337, () => {
-  console.log('Listening on port 1337...') // eslint-disable-line no-console
+app.listen(1500, () => {
+  console.log('Listening on port 1500...') // eslint-disable-line no-console
 })

@@ -1,8 +1,8 @@
 import React from 'react'
 import { render } from 'react-dom'
-import Heroes from './components/heroes'
+import Teams from './components/Teams'
 
 render(
-  <Heroes />,
+  <Teams />,
   document.getElementById('root'),
 )

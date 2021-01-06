@@ -12,12 +12,12 @@ module.exports = {
         name: 'Captain America',
         realname: 'Steve Rogers',
         firstappearance: 'Captain America Comics #1',
-        slug: 'captain-america'
+        slug: 'captain-america',
       }, {
         name: 'Spider-Man',
         realname: 'Peter Parker',
         firstappearance: 'Amazing Fantasy #15',
-        slug: 'spider-man'
+        slug: 'spider-man',
       }, {
         name: 'Iron Man',
         realname: 'Tony Stark',
@@ -27,8 +27,8 @@ module.exports = {
         name: 'Thor',
         realname: 'Thor Odinson',
         firstappearance: 'Journey into Mystery #83',
-        slug: 'thor'
-      }
+        slug: 'thor',
+      },
     ])
   },
 
@@ -41,6 +41,5 @@ module.exports = {
       return queryInterface.dropTable('users');
     */
     return queryInterface.bulkDelete('heroes')
-  }
+  },
 }
-

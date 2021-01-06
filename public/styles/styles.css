@@ -25,3 +25,8 @@ input {
 .slug {
   font-size: 16px;
 }
+
+.team {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
