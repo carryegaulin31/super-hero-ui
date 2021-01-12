@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import Search from './Search'
-import Team from './Team'
+import Page from '../components/Page'
+import Search from '../components/Search'
+import Team from '../components/Team'
+import Title from '../components/Title'
 import { filterTeams, retrieveTeams } from '../utils/teams'
 
 export default () => {
@@ -14,24 +16,20 @@ export default () => {
       setTeamList(teams)
       setFilteredTeamList(teams)
     }
-
     pullData()
   }, [])
 
   useEffect(() => {
     const filtered = filterTeams(teamList, searchTerm)
-
     setFilteredTeamList(filtered)
   }, [searchTerm])
-
   return (
-    <div className="page">
-      <div className="title">Meet the Heroes</div>
-      <div className="subtitle">A searchable list of all your favorite teams of heroes</div>
+    <Page>
+      <Title />
       <Search term={searchTerm} setter={setSearchTerm} />
       {
         filteredTeamList.map(team => (<Team key={team.id} id={team.id} name={team.name} slug={team.slug} />))
       }
-    </div>
+    </Page>
   )
 }
