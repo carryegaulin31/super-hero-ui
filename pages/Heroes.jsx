@@ -9,7 +9,7 @@ import { retrieveHeroes } from '../utils/heroes'
 
 export default ({ location }) => {
   const [teamSlug, setTeamSlug] = useState('')
-  const [team, setTeam] = useState([])
+  const [team, setTeam] = useState({})
   const [heroList, setHeroList] = useState([])
 
   useEffect(() => {
@@ -44,7 +44,6 @@ export default ({ location }) => {
             </>
           )
           : (<NotFound message="Sorry, I do not know that team" />)
-
       }
     </Page>
   )

@@ -7,7 +7,8 @@ const Input = styled.input`
   padding: 5px;
   margin: 20px 0;
   outline: none;
-  `
+`
+
 export default ({ term, setter }) => (
   <Input type="text" name="search" value={term} onChange={event => setter(event.target.value)} />
 )

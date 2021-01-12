@@ -13,6 +13,4 @@ export const retrieveHeroes = async (location) => {
   const { id, name, slug, heroes } = await fetchHeroesForTeam(teamSlug)
 
   if (!id || !name || !slug || !heroes) return { details: {}, heroes: [] }
-
-  return { heroes, details: { id, name, slug } }
 }
