@@ -1,7 +1,12 @@
 import axios from 'axios'
 
-export default async () => {
-  const { data } = await axios.get('http://localhost:1212/api/teams')
+// eslint-disable-next-line import/prefer-default-export
+export const fetchTeams = async () => {
+  try {
+    const { data } = await axios.get(`${API_BASE_URL}/teams`) // eslint-disable-line no-undef
 
-  return data
+    return data
+  } catch (error) {
+    return []
+  }
 }

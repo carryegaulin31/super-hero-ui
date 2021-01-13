@@ -1,4 +1,4 @@
-import fetchTeams from '../actions/teams'
+import { fetchTeams } from '../actions/teams'
 
 export const filterTeams = (list, term) => list.filter(team => team.slug.toLowerCase().includes(term.toLowerCase()))
 

@@ -1,19 +1,19 @@
 /* eslint-disable max-len */
-const chai = require('chai')
-const sinon = require('sinon')
-const sinonChai = require('sinon-chai')
-const models = require('../../models')
-// const {
-// afterEach, before, beforeEach, describe, it
-// } = require('mocha')
-const { heroesList, singleHero } = require('../mocks/heroes')
-const { getAllHeroes, getHeroBySlug, saveNewHero } = require('../../controllers/heroes')
+import chai, { expect } from 'chai'
+import sinon from 'sinon'
+import sinonChai from 'sinon-chai'
+/* import {
+  afterEach, beforeEach, before, describe, it,
+} from 'mocha' */
+import models from '../../models'
+import { postedHero, heroesList, singleHero } from '../mocks/heroes'
+import { getAllHeroes, getHeroBySlug, saveNewHero } from '../../controllers/heroes'
 
 chai.use(sinonChai)
-const { expect } = chai
-
 describe('Controllers - heroes', () => {
   let sandbox
+  let stubbedCreate
+  let stubbedFindAll
   let stubbedFindOne
   let stubbedSend
   let response
@@ -24,6 +24,8 @@ describe('Controllers - heroes', () => {
   before(() => {
     sandbox = sinon.createSandbox()
 
+    stubbedCreate = sandbox.stub(models.heroes, 'create')
+    stubbedFindAll = sandbox.stub(models.heroes, 'findAll')
     stubbedFindOne = sandbox.stub(models.heroes, 'findOne')
 
     stubbedSend = sandbox.stub()
@@ -48,12 +50,22 @@ describe('Controllers - heroes', () => {
 
   describe('getAllHeroes', () => {
     it('retrieves a list of heroes from the database and calls response.send() with the list', async () => {
-      const stubbedFindAll = sinon.stub(models.heroes, 'findAll').returns(heroesList)
+      stubbedFindAll.returns(heroesList)
 
       await getAllHeroes({}, response)
 
-      expect(stubbedFindAll).to.have.callCount(1)
+      expect(stubbedFindAll).to.have.been.calledWith({ include: [{ model: models.teams }] })
       expect(stubbedSend).to.have.been.calledWith(heroesList)
+    })
+
+    it('returns a 500 with an error message when the database call throws an error', async () => {
+      stubbedFindAll.throws('ERROR!')
+
+      await getAllHeroes({}, response)
+
+      expect(stubbedFindAll).to.have.been.calledWith({ include: [{ model: models.teams }] })
+      expect(stubbedStatus).to.have.been.calledWith(500)
+      expect(stubbedStatusSend).to.have.been.calledWith('Unable to retrieve heroes, please try again')
     })
   })
 
@@ -64,7 +76,10 @@ describe('Controllers - heroes', () => {
 
       await getHeroBySlug(request, response)
 
-      expect(stubbedFindOne).to.have.been.calledWith({ where: { slug: 'iron-man' } })
+      expect(stubbedFindOne).to.have.been.calledWith({
+        where: { slug: { [models.Op.like]: '%iron-man%' } },
+        include: [{ model: models.teams }],
+      })
       expect(stubbedSend).to.have.been.calledWith(singleHero)
     })
 
@@ -74,7 +89,10 @@ describe('Controllers - heroes', () => {
 
       await getHeroBySlug(request, response)
 
-      expect(stubbedFindOne).to.have.been.calledWith({ where: { slug: 'not-found' } })
+      expect(stubbedFindOne).to.have.been.calledWith({
+        where: { slug: { [models.Op.like]: '%not-found%' } },
+        include: [{ model: models.teams }],
+      })
       expect(stubbedSendStatus).to.have.been.calledWith(404)
     })
 
@@ -84,7 +102,10 @@ describe('Controllers - heroes', () => {
 
       await getHeroBySlug(request, response)
 
-      expect(stubbedFindOne).to.have.been.calledWith({ where: { slug: 'throw-error' } })
+      expect(stubbedFindOne).to.have.been.calledWith({
+        where: { slug: { [models.Op.like]: '%throw-error%' } },
+        include: [{ model: models.teams }],
+      })
       expect(stubbedStatus).to.have.been.calledWith(500)
       expect(stubbedStatusSend).to.have.been.calledWith('Unable to retrieve hero, please try again')
     })
@@ -92,14 +113,35 @@ describe('Controllers - heroes', () => {
 
   describe('saveNewHero', () => {
     it('accepts new hero details and saves them as a new hero, returning the saved record with a 201 status', async () => {
-      const request = { body: singleHero }
-      const stubbedCreate = sinon.stub(models.heroes, 'create').returns(singleHero)
+      const request = { body: postedHero }
+      stubbedCreate.returns(singleHero)
 
       await saveNewHero(request, response)
 
-      expect(stubbedCreate).to.have.been.calledWith(singleHero)
+      expect(stubbedCreate).to.have.been.calledWith(postedHero)
       expect(stubbedStatus).to.have.been.calledWith(201)
       expect(stubbedStatusSend).to.have.been.calledWith(singleHero)
+    })
+
+    it('returns a 400 when POST is missing required field', async () => {
+      const request = { body: { name: postedHero.name, slug: postedHero.slug } }
+
+      await saveNewHero(request, response)
+
+      expect(stubbedCreate).to.have.callCount(0)
+      expect(stubbedStatus).to.have.been.calledWith(400)
+      expect(stubbedStatusSend).to.have.been.calledWith('The following fields are required: name, realname, firstappearance, slug, teamId')
+    })
+
+    it('returns a 500 with an error message when the database call throws an error', async () => {
+      const request = { body: postedHero }
+      stubbedCreate.throws('ERROR')
+
+      await saveNewHero(request, response)
+
+      expect(stubbedCreate).to.have.been.calledWith(postedHero)
+      expect(stubbedStatus).to.have.been.calledWith(500)
+      expect(stubbedStatusSend).to.have.been.calledWith('Unable to save new hero, please try again')
     })
   })
 })
